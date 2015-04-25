@@ -1,5 +1,5 @@
 # colorScripts
-Some color scripts
+Some scripts to output terminal colors
 
 colorScript.py --
 simple color script with some options for Python 2.7
