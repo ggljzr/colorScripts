@@ -42,31 +42,29 @@ parser.add_argument('--height', '-H',
 
 #function to print colors in lines verticaly
 def printVertical(height, width, style, colors):
-	colorNum = len(colors)
-	colorWidth = width / colorNum
+	colorWidth = width / len(colors)
 	for i in range (0, height):
-		for j in range(0,colorNum):
+		for color in colors:
 			if style == 'both':
-				box =  colored(boxChar*(colorWidth/2),colors[j] , attrs=[])
+				box =  colored(boxChar*(colorWidth/2),color , attrs=[])
 				sys.stdout.write(box)
-				box =  colored(boxChar*(colorWidth/2),colors[j] , attrs=['bold'])
+				box =  colored(boxChar*(colorWidth/2),color , attrs=['bold'])
 				sys.stdout.write(box)
 			else:
-				box =  colored(boxChar*(colorWidth),colors[j] , attrs=[style])
+				box =  colored(boxChar*(colorWidth),color , attrs=[style])
 				sys.stdout.write(box)
 		print ''
 
 #function to print colors in lines horizontaly
 def printHorizontal(height,width, style,colors):
-	colorNum = len(colors)
-	colorHeight = height / (colorNum)
+	colorHeight = height / len(colors)
 	boxStyle = [style]
 	if style == 'both':
 		boxStyle = []
 		colorHeight = colorHeight / 2
-	for i in range(0, colorNum):
-		box = colored(boxChar*width, colors[i],attrs=boxStyle)
-		boldBox = colored(boxChar*width, colors[i], attrs=['bold'])
+	for color in colors:
+		box = colored(boxChar*width, color, attrs=boxStyle)
+		boldBox = colored(boxChar*width, color, attrs=['bold'])
 		for j in range(0, colorHeight):
 			print box
 		if style == 'both':
@@ -108,19 +106,19 @@ def colorValues(colors):
 
 if __name__ == '__main__':
 	
-	colorsGrey = ['red','green','blue','cyan','yellow','magenta','grey','white']
-	colors = ['red','green','blue','cyan','yellow','magenta']	
+	colors = ['red','green','blue','cyan','yellow','magenta','grey','white']
 
 	args = parser.parse_args()
 
 	style = args.style
 
 	if args.values == True:
-		colorValues(colorsGrey)
+		colorValues(colors)
 	
 	else:
-		if args.grey == True:
-			colors = colorsGrey
+		if args.grey == False:
+			colors.remove('grey')
+			colors.remove('white')
 
 		if style == 'normal':
 			style = 'underline' #workaround
