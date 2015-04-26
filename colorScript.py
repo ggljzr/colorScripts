@@ -2,7 +2,7 @@ import sys
 import os
 import argparse
 from termcolor import colored
-
+from random import randint
 
 #terminal size
 rows, columns = os.popen('stty size', 'r').read().split()
@@ -16,10 +16,16 @@ parser.add_argument('--terminal','-t',  required=False,
                     action='store_true',help='Use terminal size, approximately. Works better in vertical mode')
 
 parser.add_argument('--values','-v',required=False,action='store_true',
-		    help='Print color values, overrides other options')
+		    help='Print color values, overrides other options except --box')
+
+parser.add_argument('--text','-tx',required=False, action='store_true',
+		    help='Print colored text on colored background to test visibility')
 
 parser.add_argument('--grey', '-g', required=False, action='store_true',
 		   help='Include grey in color print')
+
+parser.add_argument('--box', '-b', required=False, action='store_true',
+		    help='Uses box ' + u'\u25a0' + ' instead of rectangle')
 
 parser.add_argument('--style', '-s', required=False,
                     default='normal',
@@ -29,8 +35,8 @@ parser.add_argument('--style', '-s', required=False,
 
 parser.add_argument('--direction', '-d',  
 		    required=False, default='vertical', 
-	            choices=['horizontal','vertical'],type=str, 
-                    help='choose direciton of print (horizontal or vertical)')
+	            choices=['horizontal','vertical', 'random'],type=str, 
+                    help='choose direciton of print (horizontal, vertical or random)')
 
 
 parser.add_argument('--width', '-W', 
@@ -38,7 +44,6 @@ parser.add_argument('--width', '-W',
 
 parser.add_argument('--height', '-H',
                     required=False, default='20', type=int,  help='Height, default 20')
-
 
 #function to print colors in lines verticaly
 def printVertical(height, width, style, colors):
@@ -71,6 +76,21 @@ def printHorizontal(height,width, style,colors):
 			for k in range(0,colorHeight):
 				print boldBox
 
+def printRandom(height, width, style, colors):
+	lStyle = style
+	for i in range(0, height):
+		for j in range(0, width):
+			if style == 'both':
+				randStyle = randint(0,1)
+				if randStyle == 1:
+					lStyle = 'bold'
+				else:
+					lStyle = 'underline'		
+			rand = randint(0,len(colors) - 1)
+			box = colored(boxChar, colors[rand],attrs=[lStyle])
+			sys.stdout.write(box)
+		print ''
+	
 def colorValues(colors):
 	Xresources = os.popen('xrdb -query','r')
 	colorValues = []	
@@ -104,6 +124,21 @@ def colorValues(colors):
 		sys.stdout.write(box)
 		print ' - ' + i[2] + ' ' + printStyle  + ' (' + i[1] + ')' 
 
+def textOutput(colors):
+	print '------------------------------------------------------'
+	for background in colors:
+		bckg = 'on_' + background
+		for foreground in colors:
+			output = colored(' ' + foreground + ' ', foreground, bckg)
+			sys.stdout.write(output)
+		print ''
+		for foreground in colors:
+			output = colored(' ' + foreground + ' ', foreground, bckg, attrs=['bold'])
+			sys.stdout.write(output)
+		print ''
+	print '------------------------------------------------------'
+
+
 if __name__ == '__main__':
 	
 	colors = ['red','green','blue','cyan','yellow','magenta','grey','white']
@@ -112,9 +147,14 @@ if __name__ == '__main__':
 
 	style = args.style
 
+	if args.box == True:
+		boxChar = u'\u25a0'
+
 	if args.values == True:
 		colorValues(colors)
 	
+	elif args.text == True:
+		textOutput(colors)
 	else:
 		if args.grey == False:
 			colors.remove('grey')
@@ -133,4 +173,6 @@ if __name__ == '__main__':
 		if(args.direction == 'vertical'):
 			printVertical(height, width, style, colors)
 		elif(args.direction == 'horizontal'):
-			printHorizontal(height, width, style, colors)	
+			printHorizontal(height, width, style, colors)
+		elif(args.direction == 'random'):
+			printRandom(height,width, style, colors)			
