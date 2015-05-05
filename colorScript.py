@@ -141,7 +141,7 @@ def textOutput(colors):
 
 if __name__ == '__main__':
 	
-	colors = ['grey','red','green','blue','cyan','yellow','magenta','white']
+	colors = ['grey','red','green','yellow','blue','magenta','cyan','white']
 
 	args = parser.parse_args()
 
