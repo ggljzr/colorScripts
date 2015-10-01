@@ -1,11 +1,12 @@
 import sys
-import os
+import subprocess
 import argparse
 from termcolor import colored
 from random import randint
 
 #terminal size
-rows, columns = os.popen('stty size', 'r').read().split()
+#rows, columns = os.popen('stty size', 'r').read().split()
+rows, columns = subprocess.check_output(['stty', 'size']).split()
 
 boxChar = u'\u2588'
 
