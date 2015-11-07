@@ -137,6 +137,14 @@ def textOutput(colors):
 			output = colored(' ' + foreground + ' ', foreground, bckg, attrs=['bold'])
 			sys.stdout.write(output)
 		print ''
+	for foreground in colors:
+		output = colored(' ' + foreground + ' ', foreground)
+		sys.stdout.write(output)
+	print ''
+	for foreground in colors:
+		output = colored(' ' + foreground + ' ' , foreground, attrs=['bold'])
+		sys.stdout.write(output)
+	print ''
 	print '------------------------------------------------------'
 
 
